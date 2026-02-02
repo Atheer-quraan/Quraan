@@ -51,6 +51,18 @@
         .header-left { display: flex; align-items: center; gap: 15px; flex: 1; }
         .search-wrapper { position: relative; display: flex; align-items: center; margin-left: auto; }
         .search-toggle-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); z-index: 2; }
+        
+        .search-toggle-btn i {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* تأثير دوران بسيط عند التحول */
+.search-wrapper.expanded .search-toggle-btn i {
+    transform: rotate(90deg);
+    color: #ef4444; /* تغيير اللون للأحمر عند الإغلاق (اختياري) */
+}
+
+        
         .search-input-container { position: absolute; left: 0; top: 0; width: 0; height: 40px; background: var(--bg-card); border-radius: 20px; display: flex; align-items: center; overflow: hidden; transition: width 0.4s; border: 1px solid transparent; opacity: 0; }
         .search-wrapper.expanded .search-input-container { width: 300px; border-color: var(--primary); opacity: 1; padding-left: 40px; }
         .search-input { width: 100%; background: transparent; border: none; color: white; padding: 0 15px; font-family: 'Cairo'; height: 100%; }
@@ -415,6 +427,41 @@
         .mobile-menu-btn { display: none; font-size: 1.2rem; cursor: pointer; margin-left: 10px; }
         @media (max-width: 768px) { .mobile-menu-btn { display: block; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        
+        
+        @media (max-width: 768px) {
+    /* تقليل الحواف الجانبية للشاشة الرئيسية */
+    .content-view {
+        padding: 10px 10px 120px 10px; /* تقليل الحواف من 40px إلى 10px */
+    }
+
+    /* تصغير المسافات بين عناصر الشبكة (البطاقات) */
+
+
+    /* تقليل الحواف الداخلية للبطاقة نفسها */
+    .card {
+        padding: 12px auto;
+        border-radius: 12px;
+    }
+
+    /* تقليل حجم الخطوط لتناسب المساحة الجديدة */
+    .card h3 {
+        font-size: 0.95rem;
+    }
+
+    /* تقليل حواف الهيدر العلوي */
+    .top-bar {
+        padding: 10px 15px;
+        height: 65px;
+    }
+
+    /* تقليل حواف المصحف في الجوال */
+    .page-content {
+        padding: 5px !important; /* إلغاء الحواف البيضاء الكبيرة حول صفحة المصحف */
+    }
+}
+
     </style>
 </head>
 <body>
@@ -447,7 +494,7 @@
             <div class="search-wrapper" id="searchWrapper">
                 <div class="search-input-container">
                     <input type="text" class="search-input" id="searchInput" placeholder="ابحث هنا..." oninput="handleSearchInput()">
-                    <button class="clear-search-btn" id="clearSearchBtn" onclick="clearSearch()"><i class="fas fa-times"></i></button>
+                    <button class="clear-search-btn" id="clearSearchBtn" onclick="clearSearch()"><i class="fas fa-trash-can"></i></button>
                 </div>
                 <button class="search-toggle-btn" onclick="toggleSearch()"><i class="fas fa-search"></i></button>
             </div>
@@ -866,16 +913,25 @@
     // === 8. البحث ===
     // ==========================================
     function toggleSearch() { 
-        const wrapper = document.getElementById('searchWrapper');
-        const topBar = document.querySelector('.top-bar');
-        wrapper.classList.toggle('expanded');
-        if(wrapper.classList.contains('expanded')) {
-            document.getElementById('searchInput').focus();
-            topBar.classList.add('search-active');
-        } else {
-            topBar.classList.remove('search-active');
-        }
+    const wrapper = document.getElementById('searchWrapper');
+    const topBar = document.querySelector('.top-bar');
+    const searchBtnIcon = document.querySelector('.search-toggle-btn i'); // تحديد الأيقونة داخل الزر
+    
+    wrapper.classList.toggle('expanded');
+    
+    if(wrapper.classList.contains('expanded')) {
+        document.getElementById('searchInput').focus();
+        topBar.classList.add('search-active');
+        // تغيير الأيقونة إلى علامة الإغلاق
+        searchBtnIcon.className = 'fas fa-times'; 
+    } else {
+        topBar.classList.remove('search-active');
+        // إعادة الأيقونة إلى عدسة البحث
+        searchBtnIcon.className = 'fas fa-search';
+        clearSearch(); // اختيارياً: مسح البحث عند الإغلاق
     }
+}
+
 
     function updateNoResultsMsg(containerId, isEmpty) {
         const container = document.getElementById(containerId);
